@@ -1,43 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>ESP8266传感器监控</title>
+    <title>MQTT浏览器测试</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .sensor { margin: 15px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
-        .value { font-size: 24px; font-weight: bold; margin: 5px 0; }
-        #connectionStatus { margin: 15px 0; padding: 10px; border-radius: 5px; background: #f0f0f0; }
-        #statusText { font-weight: bold; }
-        #updateTime { color: #666; font-style: italic; }
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #messages { height: 300px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; }
+        .message { margin: 5px 0; padding: 5px; background: #f5f5f5; }
+        .error { color: red; }
     </style>
 </head>
 <body>
-    <h1>环境传感器数据</h1>
-    
-    <div id="connectionStatus">
-        <span id="statusText">正在初始化连接...</span>
-        <span id="currentBroker"></span>
+    <h1>MQTT浏览器测试</h1>
+    <div>
+        <button id="connectBtn">连接MQTT</button>
+        <span id="status">状态: 未连接</span>
     </div>
-    
-    <div class="sensor">
-        <h2>温度</h2>
-        <div class="value" id="temperature">-- °C</div>
-    </div>
-    
-    <div class="sensor">
-        <h2>湿度</h2>
-        <div class="value" id="humidity">-- %</div>
-    </div>
-    
-    <div class="sensor">
-        <h2>光照</h2>
-        <div class="value" id="illuminance">-- lx</div>
-    </div>
-    
-    <div id="updateTime">更新时间: --</div>
+    <div id="messages"></div>
 
-    <script src="script.js"></script>
+    <script>
+        const topic = "esp8266/sensor/data/202509062242";
+        let client = null;
+
+        document.getElementById('connectBtn').addEventListener('click', function() {
+            if (client && client.connected) {
+                client.end();
+                this.textContent = "连接MQTT";
+                updateStatus("状态: 已断开");
+                return;
+            }
+
+            updateStatus("状态: 正在连接...");
+            this.disabled = true;
+
+            // 使用WebSocket连接（浏览器必须用此方式）
+            client = mqtt.connect('wss://test.mosquitto.org:8081/mqtt', {
+                clientId: 'browser_test_' + Math.random().toString(16).substr(2, 8)
+            });
+
+            client.on('connect', () => {
+                updateStatus("状态: 已连接");
+                document.getElementById('connectBtn').textContent = "断开连接";
+                document.getElementById('connectBtn').disabled = false;
+                client.subscribe(topic, (err) => {
+                    if (err) {
+                        logMessage(`订阅失败: ${err.message}`, true);
+                    } else {
+                        logMessage(`已订阅主题: ${topic}`);
+                    }
+                });
+            });
+
+            client.on('message', (receivedTopic, payload) => {
+                const data = JSON.parse(payload.toString());
+                logMessage(`收到消息 [${receivedTopic}]: ${JSON.stringify(data)}`);
+                console.log("解析数据:", {
+                    temperature: data.t,
+                    humidity: data.h,
+                    illuminance: data.i,
+                    timestamp: new Date(data.ts).toLocaleString()
+                });
+            });
+
+            client.on('error', (err) => {
+                logMessage(`错误: ${err.message}`, true);
+                updateStatus("状态: 连接失败");
+                document.getElementById('connectBtn').disabled = false;
+            });
+
+            client.on('close', () => {
+                updateStatus("状态: 已断开");
+                document.getElementById('connectBtn').textContent = "连接MQTT";
+                document.getElementById('connectBtn').disabled = false;
+            });
+        });
+
+        function logMessage(message, isError = false) {
+            const div = document.createElement('div');
+            div.className = isError ? 'message error' : 'message';
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            document.getElementById('messages').appendChild(div);
+        }
+
+        function updateStatus(text) {
+            document.getElementById('status').textContent = text;
+        }
+    </script>
 </body>
 </html>
