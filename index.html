@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://unpkg.com; script-src 'self' https://unpkg.com">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <title>ESP8266传感器数据</title>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://unpkg.com/mqtt@5.14.1/dist/mqtt.min.js?v=5.14.1"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
         .sensor {
             margin: 15px 0;
             padding: 15px;
@@ -78,6 +75,14 @@
     <button id="connectBtn" onclick="toggleConnection()">连接MQTT</button>
 
     <script>
+         // 添加错误处理逻辑
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('fetch') && e.filename.includes('content_script')) {
+                console.warn('浏览器扩展请求已被阻止');
+                return true; // 阻止默认错误处理
+            }
+        });
+        
         // 配置参数（与ESP8266代码一致）
         const MQTT_CONFIG = {
             server: "wss://test.mosquitto.org:8081/mqtt",
@@ -171,8 +176,9 @@
         // 页面加载后自动连接（可选）
         window.addEventListener('load', () => {
             // 可以取消下一行的注释来自动连接
-            // toggleConnection();
+            toggleConnection();
         });
     </script>
 </body>
 </html>
+
