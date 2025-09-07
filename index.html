@@ -10,7 +10,10 @@
 <body>
     <h1>环境传感器数据</h1>
     <div class="info">连接状态: <span id="connectionStatus">未连接</span></div>
-    
+    <div id="connectionStatus">
+        <span id="statusText">正在初始化...</span>
+        <span id="currentBroker"></span>
+    </div>
     <div class="sensor">
         <h2>温度</h2>
         <div class="value" id="temperature">-- °C</div>
@@ -28,4 +31,5 @@
     
     <script src="script.js"></script>
 </body>
+
 </html>
