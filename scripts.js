@@ -1,8 +1,8 @@
 // 与ESP8266相同的MQTT服务器列表
 const mqttServers = [
-    "test.mosquitto.org",
-    "broker.hivemq.com",
-    "broker.emqx.io"
+    "wss://test.mosquitto.org:8081/mqtt",
+    "wss://broker.hivemq.com:8000/mqtt",
+    "wss://broker.emqx.io:8083/mqtt"
 ];
 
 // 与ESP8266相同的主题和客户端ID
@@ -111,4 +111,5 @@ window.addEventListener('load', () => {
             connectToNextBroker();
         }
     }, 60000);
+
 });
