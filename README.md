@@ -1,5 +1,9 @@
 # mqtt-sensor-web
 描述：ESP8266传感器数据Web监控界面
+补充:访问https://song00000000001.github.io/mqtt-sensor-web/即可查看web端
+    目前用的mqtt broker:wss://test.mosquitto.org:8081/mqtt
+    目前用的topic:esp8266/sensor/data/202509081515
+ps:(请不要向我的topic发消息)
 
 1.代码.7z中包含51的keil工程，以及esp01s(esp8266)的ino文件（arduino开发文件），还有web端的代码。
 
