@@ -9,7 +9,7 @@
     <style id="main-style">
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -25,18 +25,31 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .sensor-card {
+        .sensor-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
             margin: 15px 0;
+        }
+        .sensor-card {
+            width: 32%;
+            margin-bottom: 15px;
             padding: 15px;
             background: #f9f9f9;
             border-radius: 5px;
             border-left: 4px solid #4CAF50;
+            box-sizing: border-box;
+        }
+        .sensor-card h2 {
+            text-align: center;
+            margin-top: 0;
         }
         .sensor-value {
             font-size: 24px;
             font-weight: bold;
             color: #2196F3;
             margin: 5px 0;
+            text-align: center;
         }
         .status {
             margin: 10px 0;
@@ -121,6 +134,11 @@
             margin-top: 20px;
             text-align: right;
         }
+        @media (max-width: 600px) {
+            .sensor-card {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -132,19 +150,36 @@
             <span id="currentBroker"></span>
         </div>
         
-        <div class="sensor-card">
-            <h2>温度</h2>
-            <div class="sensor-value" id="temperature">-- °C</div>
-        </div>
-        
-        <div class="sensor-card">
-            <h2>湿度</h2>
-            <div class="sensor-value" id="humidity">-- %</div>
-        </div>
-        
-        <div class="sensor-card">
-            <h2>光照</h2>
-            <div class="sensor-value" id="illuminance">-- lx</div>
+        <div class="sensor-group">
+            <div class="sensor-card">
+                <h2>传感器1</h2>
+                <h3>温度</h3>
+                <div class="sensor-value" id="temperature1">-- °C</div>
+                <h3>湿度</h3>
+                <div class="sensor-value" id="humidity1">-- %</div>
+                <h3>光照</h3>
+                <div class="sensor-value" id="illuminance1">-- lx</div>
+            </div>
+            
+            <div class="sensor-card">
+                <h2>传感器2</h2>
+                <h3>温度</h3>
+                <div class="sensor-value" id="temperature2">-- °C</div>
+                <h3>湿度</h3>
+                <div class="sensor-value" id="humidity2">-- %</div>
+                <h3>光照</h3>
+                <div class="sensor-value" id="illuminance2">-- lx</div>
+            </div>
+            
+            <div class="sensor-card">
+                <h2>传感器3</h2>
+                <h3>温度</h3>
+                <div class="sensor-value" id="temperature3">-- °C</div>
+                <h3>湿度</h3>
+                <div class="sensor-value" id="humidity3">-- %</div>
+                <h3>光照</h3>
+                <div class="sensor-value" id="illuminance3">-- lx</div>
+            </div>
         </div>
         
         <div class="timestamp" id="updateTime">更新时间: --</div>
@@ -289,14 +324,70 @@
         
         // 更新传感器数据
         function updateSensorData(data) {
-            if (data.t !== undefined) {
-                document.getElementById('temperature').textContent = `${data.t.toFixed(1)} °C`;
+            // 更新传感器1数据
+            if (data.t1 !== undefined) {
+                document.getElementById('temperature1').textContent = `${data.t1.toFixed(1)} °C`;
             }
-            if (data.h !== undefined) {
-                document.getElementById('humidity').textContent = `${data.h.toFixed(1)} %`;
+            if (data.h1 !== undefined) {
+                document.getElementById('humidity1').textContent = `${data.h1.toFixed(1)} %`;
             }
-            if (data.i !== undefined) {
-                document.getElementById('illuminance').textContent = `${data.i.toFixed(1)} lx`;
+            if (data.i1 !== undefined) {
+                document.getElementById('illuminance1').textContent = `${data.i1.toFixed(1)} lx`;
+            }
+            
+            // 更新传感器2数据
+            if (data.t2 !== undefined) {
+                document.getElementById('temperature2').textContent = `${data.t2.toFixed(1)} °C`;
+            }
+            if (data.h2 !== undefined) {
+                document.getElementById('humidity2').textContent = `${data.h2.toFixed(1)} %`;
+            }
+            if (data.i2 !== undefined) {
+                document.getElementById('illuminance2').textContent = `${data.i2.toFixed(1)} lx`;
+            }
+            
+            // 更新传感器3数据
+            if (data.t3 !== undefined) {
+                document.getElementById('temperature3').textContent = `${data.t3.toFixed(1)} °C`;
+            }
+            if (data.h3 !== undefined) {
+                document.getElementById('humidity3').textContent = `${data.h3.toFixed(1)} %`;
+            }
+            if (data.i3 !== undefined) {
+                document.getElementById('illuminance3').textContent = `${data.i3.toFixed(1)} lx`;
+            }
+            
+            // 如果数据格式是数组形式（兼容旧格式）
+            if (Array.isArray(data.t)) {
+                if (data.t[0] !== undefined) {
+                    document.getElementById('temperature1').textContent = `${data.t[0].toFixed(1)} °C`;
+                }
+                if (data.h[0] !== undefined) {
+                    document.getElementById('humidity1').textContent = `${data.h[0].toFixed(1)} %`;
+                }
+                if (data.i[0] !== undefined) {
+                    document.getElementById('illuminance1').textContent = `${data.i[0].toFixed(1)} lx`;
+                }
+                
+                if (data.t[1] !== undefined) {
+                    document.getElementById('temperature2').textContent = `${data.t[1].toFixed(1)} °C`;
+                }
+                if (data.h[1] !== undefined) {
+                    document.getElementById('humidity2').textContent = `${data.h[1].toFixed(1)} %`;
+                }
+                if (data.i[1] !== undefined) {
+                    document.getElementById('illuminance2').textContent = `${data.i[1].toFixed(1)} lx`;
+                }
+                
+                if (data.t[2] !== undefined) {
+                    document.getElementById('temperature3').textContent = `${data.t[2].toFixed(1)} °C`;
+                }
+                if (data.h[2] !== undefined) {
+                    document.getElementById('humidity3').textContent = `${data.h[2].toFixed(1)} %`;
+                }
+                if (data.i[2] !== undefined) {
+                    document.getElementById('illuminance3').textContent = `${data.i[2].toFixed(1)} lx`;
+                }
             }
             
             const now = new Date();
@@ -372,9 +463,15 @@
         // 数据超时检查
         setInterval(() => {
             if (lastUpdateTime && (Date.now() - lastUpdateTime > 10000)) {
-                document.getElementById('temperature').textContent = '-- °C';
-                document.getElementById('humidity').textContent = '-- %';
-                document.getElementById('illuminance').textContent = '-- lx';
+                document.getElementById('temperature1').textContent = '-- °C';
+                document.getElementById('humidity1').textContent = '-- %';
+                document.getElementById('illuminance1').textContent = '-- lx';
+                document.getElementById('temperature2').textContent = '-- °C';
+                document.getElementById('humidity2').textContent = '-- %';
+                document.getElementById('illuminance2').textContent = '-- lx';
+                document.getElementById('temperature3').textContent = '-- °C';
+                document.getElementById('humidity3').textContent = '-- %';
+                document.getElementById('illuminance3').textContent = '-- lx';
                 document.getElementById('updateTime').textContent = '--';
                 updateStatus("数据接收超时", false);
                 lastUpdateTime = 0;
